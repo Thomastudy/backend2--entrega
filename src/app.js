@@ -1,19 +1,30 @@
-import http from "http"
-import express from "express"
+import http from "http";
+import express from "express";
 
-const app = express()
+// Importacion de Routers
+import productsRouter from "./routes/products.router.js";
+import cartsRouter from "./routes/carts.router.js";
+
+// Configuracion de puerto
+const app = express();
 const PUERTO = 8080;
 
+//Middleware: aca le digo al servidor que voy a usar formato json
+app.use(express.json());
+
 // CREAR SERVIDOR EN HTTP
-const server = http.createServer((req,res) => {
-    console.log("Escuchando en el puerto 8080")
-    res.end("Mi primer hola mundo desde backend")
-})
+// const server = http.createServer((req, res) => {
+//   console.log("Escuchando en el puerto 8080");
+//   res.end("Mi primer hola mundo desde backend");
+// });
 
 // VINCULA EL SERVIDOR
-server.listen(PUERTO, () =>{
-    console.log(`escuchando en el puerto: http://localhost:${PUERTO}`)
-})
+app.listen(PUERTO, () => {
+  console.log(`escuchando en el puerto: http://localhost:${PUERTO}`);
+});
+
+app.use("/", productsRouter);
+app.use("/", cartsRouter);
 
 // app.use("/api/products", productsRouter)
 // app.use("/api/carts", cartsRouter)
@@ -33,9 +44,3 @@ server.listen(PUERTO, () =>{
 // thumbnails:Array de Strings que contenga las rutas donde están almacenadas las imágenes referentes a dicho producto
 // Status es true por defecto.
 // Todos los campos son obligatorios, a excepción de thumbnails
-
-
-app.GET("/", (req,res) => {
-
-    let {id} = 
-})
