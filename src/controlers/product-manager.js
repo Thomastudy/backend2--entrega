@@ -11,11 +11,13 @@ class ProductManager {
     this.path = path;
   }
 
-  async addProduct(title, description, price, img, code, stock) {
+  async addProduct(title, description, price, img, code, stock, category) {
     // agregar productos a la lista de productos
 
     //Esto valida que el campo este comleto
-    if (!title || !description || !price || !img || !code || !stock) {
+    if (
+      (!title || !description || !price || !img || !code || !stock, !category)
+    ) {
       console.log("Todos los campos son obligatorios");
       return;
     }
@@ -35,6 +37,7 @@ class ProductManager {
       img,
       code,
       stock,
+      category,
     };
 
     // Esto agrega el producto
@@ -73,54 +76,55 @@ class ProductManager {
   }
 }
 
+export { ProductManager };
+
 // cada producto que se cree debe tener: titulo, descripcion, precio, codigo, stock
 
-// TESTING:
+////////////////////////////////////////////////////////////////////
 
-// instancia para "product manager"
-const manager = new ProductManager("./productos.json");
+// // TESTING:
 
-// debe devolver array vacio
-console.log(manager.getProducts());
+// // debe devolver array vacio
+// console.log(manager.getProducts());
 
-// aca se llama al metodo "addProduct" con campos para rellenar
-// title,
-// description,
-// price,
-// img,
-// code,
-// stock
-// Agrego primer producto
-manager.addProduct(
-  "producto de prueba",
-  "este es el prodcuto de prueba",
-  200,
-  "sin imagen",
-  "abc123",
-  25
-);
+// // aca se llama al metodo "addProduct" con campos para rellenar
+// // title,
+// // description,
+// // price,
+// // img,
+// // code,
+// // stock
+// // Agrego primer producto
+// manager.addProduct(
+//   "producto de prueba",
+//   "este es el prodcuto de prueba",
+//   200,
+//   "sin imagen",
+//   "abc123",
+//   25
+// );
 
-// Agrego un nuevo poducto para probar como funcions
-manager.addProduct(
-  "Segundo producto de prueba",
-  "este es el segundo prodcuto prueba",
-  450,
-  "sin imagen",
-  "abc124",
-  12
-);
+// // Agrego un nuevo poducto para probar como funcions
+// manager.addProduct(
+//   "Segundo producto de prueba",
+//   "este es el segundo prodcuto prueba",
+//   450,
+//   "sin imagen",
+//   "abc124",
+//   12
+// );
 
-// // Sin un dato: deberia devolver error
-// manager.addProducts("falta un dato", "este es un producto sin un dato", 628, "sin imagen", "abc124")
+// // // Sin un dato: deberia devolver error
+// // manager.addProducts("falta un dato", "este es un producto sin un dato", 628, "sin imagen", "abc124")
 
-// con el mismo id
-// manager.addProduct("mismo Id", "este es un producto con midmo id", 820, "sin imagen", "abc124", 46)
+// // con el mismo id
+// // manager.addProduct("mismo Id", "este es un producto con midmo id", 820, "sin imagen", "abc124", 46)
 
-// console.log(manager.getProducts())
+// // console.log(manager.getProducts())
 
-// probar getProductById
-// camino feliz
-manager.getProductsById(2);
+// // probar getProductById
+// // camino feliz
+// manager.getProductsById(2);
 
-// // camino fallado
-// manager.getProductsById(6);
+// // // camino fallado
+// // manager.getProductsById(6);

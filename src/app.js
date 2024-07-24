@@ -1,4 +1,3 @@
-import http from "http";
 import express from "express";
 
 // Importacion de Routers
@@ -12,22 +11,19 @@ const PUERTO = 8080;
 //Middleware: aca le digo al servidor que voy a usar formato json
 app.use(express.json());
 
-// CREAR SERVIDOR EN HTTP
-// const server = http.createServer((req, res) => {
-//   console.log("Escuchando en el puerto 8080");
-//   res.end("Mi primer hola mundo desde backend");
-// });
+
+app.use("/", productsRouter);
+app.use("/", cartsRouter);
 
 // VINCULA EL SERVIDOR
 app.listen(PUERTO, () => {
   console.log(`escuchando en el puerto: http://localhost:${PUERTO}`);
 });
 
-app.use("/", productsRouter);
-app.use("/", cartsRouter);
 
-// app.use("/api/products", productsRouter)
-// app.use("/api/carts", cartsRouter)
+
+// app.use("/api/products", productsRouter)✅
+// app.use("/api/carts", cartsRouter)✅
 
 //la ruta raiz get / debera listar los productos de la base
 //la ruta raiz get /:pid debera listar el producto con mismo id

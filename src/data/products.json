@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "title": "Prueba",
+    "description": "Descripción de prueba",
+    "price": 10,
+    "img": "imagen.jpg",
+    "code": "abc999",
+    "stock": 5,
+    "category": "Categoría de prueba"
+  }
+]
