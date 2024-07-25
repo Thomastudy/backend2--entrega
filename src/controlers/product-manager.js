@@ -9,17 +9,30 @@ class ProductManager {
   constructor(path) {
     this.products = [];
     this.path = path;
+
+    this.cargarProductos().catch(error => console.error("Error al cargar los productos en el constructor:", error));
+  }
+
+  // cargado de los productos en el archivo 
+
+  async cargarProductos(){
+    try{
+      this.products = await this.leerArchivo()
+    }catch(error){
+      console.error("No se han podido cargar los productos");
+    }
   }
 
   async addProduct(title, description, price, img, code, stock, category) {
     // agregar productos a la lista de productos
 
-    //Esto valida que el campo este comleto
+    // Esto valida que el campo este comleto
     if (
       (!title || !description || !price || !img || !code || !stock, !category)
     ) {
-      console.log("Todos los campos son obligatorios");
-      return;
+
+      console.log("Faltan campos")
+      return("Todos los campos son obligatorios");
     }
 
     //Este que el codigo no se repita
@@ -47,22 +60,31 @@ class ProductManager {
     await this.guardarArchivo(this.products);
   }
 
-  getProducts() {
+  async getProducts() {
     // devuelve el aray con todos los productos creados hasta el momento
-    return this.products;
+    try{
+      const arrayProductos = await this.leerArchivo()
+      return arrayProductos
+
+    }catch(error){
+      console.error("Error al obtener los productos del archivo", error);
+    }
   }
 
-  getProductsById(id) {
+  async getProductsById(id) {
     // esto va a buscar el product que pertenezca al id que se le soicita
 
-    const producto = this.products.find((item) => item.id === id);
+    try{  const producto = this.products.find((item) => item.id === id);
 
-    if (!producto) {
-      console.log("No se encuentra el producto con el id: " + id);
-    } else {
-      console.log(`El producto ${producto.title} se encuentra`);
-      console.log(producto);
-    }
+      if (!producto) {
+        console.log("No se encuentra el producto con el id: " + id);
+        return null
+      } else {
+        console.log(`El producto ${producto.title} encontrado`);
+        return producto
+      }}catch(error){
+        console.error("Error al buscar el producto con el id solicitado", error);
+      }
   }
 
   async leerArchivo() {

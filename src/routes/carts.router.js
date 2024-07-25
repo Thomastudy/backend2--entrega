@@ -56,4 +56,11 @@ router.post("/:cid/product/:pid", async (req, res) => {
   }
 });
 
+
+
+
+/// FALTAN ACTUALIZAR Y ELIMINAR
+
+
+
 export default router;

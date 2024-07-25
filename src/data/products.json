@@ -1,12 +1,44 @@
 [
   {
     "id": 1,
-    "title": "Prueba",
-    "description": "Descripción de prueba",
-    "price": 10,
-    "img": "imagen.jpg",
-    "code": "abc999",
-    "stock": 5,
-    "category": "Categoría de prueba"
+    "title": {
+      "title": "Aros Amor - Dorado",
+      "description": "estan re buenos",
+      "price": "280",
+      "img": "img/productos/arosamordorado.jpeg",
+      "code": "ArosAmorD",
+      "stock": "5",
+      "category": "aritos"
+    }
+  },
+  {
+    "id": 1,
+    "title": "Ear Cuffs Moon",
+    "description": "estan re buenos",
+    "price": "280",
+    "img": "img/productos/EarCuffsMoon.jpeg",
+    "code": "EarCuffsMoon",
+    "stock": "5",
+    "category": "aritos"
+  },
+  {
+    "id": 2,
+    "title": "Ear Cuff Positano",
+    "description": "estan re buenos",
+    "price": "200",
+    "img": "img/productos/EarCuffPositano.jpeg",
+    "code": "EarCuffPositano",
+    "stock": "5",
+    "category": "aritos"
+  },
+  {
+    "id": 1,
+    "title": "Pulsera Rome",
+    "description": "estan re buenos",
+    "price": "150",
+    "img": "img/productos/pulseraRome.jpeg",
+    "code": "PulseraRome",
+    "stock": "5",
+    "category": "pulseras"
   }
 ]
