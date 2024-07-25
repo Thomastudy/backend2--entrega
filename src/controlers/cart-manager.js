@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "fs/promises";
 
+
 class CartManager {
   constructor(path) {
     this.path = path;
@@ -7,14 +8,15 @@ class CartManager {
     this.ultId = 0;
 
     // Cargar los carritos almacenados en el archivo:
-    this.cargarCarritos();
-  }
+    this.cargarCarritos().catch(error => console.error("Error al cargar los carritos en el constructor:", error));
 
+  }
   async cargarCarritos() {
     try {
-      const data = await fs.readFile(this.path, "utf-8");
+      const data = await readFile(this.path, "utf-8");
       this.carts = JSON.parse(data);
-      if (this.cargarCarritos.length > 0) {
+      // console.log("Datos del archivo cargados:", this.carts); // para controlar que se cargue bien
+      if (this.carts.length > 0) {
         // verifico si hay x lo menos un elemento y calculo el ultimo id
         this.ultId = Math.max(...this.carts.map((cart) => cart.id));
       }
@@ -27,7 +29,7 @@ class CartManager {
   }
 
   async guardarCarritos() {
-    await fs.writeFile(this.path, JSON.stringify(this.carts, null, 2));
+    await writeFile(this.path, JSON.stringify(this.carts, null, 2));
   }
 
   // metodo para crear carrito
@@ -35,7 +37,7 @@ class CartManager {
   async crearCarrito() {
     const nuevoCarrito = {
       id: ++this.ultId,
-      produts: [],
+      products: [],
     };
 
     // con este metodo metemos al array
@@ -64,9 +66,9 @@ class CartManager {
   }
 
   async agregarProductoAlCarrito(idCarrito, idProducto, quantity = 1) {
-    const carrito = await this.getCarritoById(idProducto);
-    const existeProducto = carrito.produts.find(
-      (p) => p.produts === idProducto
+    const carrito = await this.getCarritoById(idCarrito);
+    const existeProducto = carrito.products.find(
+      (p) => p.product === idProducto
     );
 
     if (existeProducto) {

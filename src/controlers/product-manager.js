@@ -1,7 +1,7 @@
 // PRODUCT MANAGER
 
 // IMPORT
-import fs from "fs/promises";
+import { readFile, writeFile } from "fs/promises";
 
 class ProductManager {
   static ultId = 0;
@@ -66,13 +66,13 @@ class ProductManager {
   }
 
   async leerArchivo() {
-    const respuesta = await fs.readFile(this.path, "utf-8");
+    const respuesta = await readFile(this.path, "utf-8");
     const arrayProductos = JSON.parse(respuesta);
     return arrayProductos;
   }
 
   async guardarArchivo(arrayProductos) {
-    await fs.writeFile(this.path, JSON.stringify(arrayProductos, null, 2));
+    await writeFile(this.path, JSON.stringify(arrayProductos, null, 2));
   }
 }
 

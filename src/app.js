@@ -11,16 +11,13 @@ const PUERTO = 8080;
 //Middleware: aca le digo al servidor que voy a usar formato json
 app.use(express.json());
 
-
-app.use("/", productsRouter);
-app.use("/", cartsRouter);
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
 
 // VINCULA EL SERVIDOR
 app.listen(PUERTO, () => {
   console.log(`escuchando en el puerto: http://localhost:${PUERTO}`);
 });
-
-
 
 // app.use("/api/products", productsRouter)✅
 // app.use("/api/carts", cartsRouter)✅
