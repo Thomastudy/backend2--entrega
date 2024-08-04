@@ -1,7 +1,9 @@
 import { readFile, writeFile } from "fs/promises";
 
-
+// CartManager es la clase principal que va a ser llamada desde la app.js
 class CartManager {
+
+  // constructor
   constructor(path) {
     this.path = path;
     this.carts = [];
@@ -13,13 +15,16 @@ class CartManager {
   }
   async cargarCarritos() {
     try {
+
       const data = await readFile(this.path, "utf-8");
       this.carts = JSON.parse(data);
+      
       // console.log("Datos del archivo cargados:", this.carts); // para controlar que se cargue bien
       if (this.carts.length > 0) {
         // verifico si hay x lo menos un elemento y calculo el ultimo id
         this.ultId = Math.max(...this.carts.map((cart) => cart.id));
       }
+      return this.carts
     } catch {
       console.log("Error al cargar el carrito");
 
@@ -80,6 +85,8 @@ class CartManager {
     await this.guardarCarritos();
     return carrito;
   }
+
+
 }
 
 export { CartManager };

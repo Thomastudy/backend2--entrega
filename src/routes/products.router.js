@@ -11,7 +11,7 @@ const router = Router();
 // Get inicial
 router.get("/", async (req, res) => {
   try {
-    const products = await manager.getProducts()
+    const products = await manager.getProducts();
     res.send(products);
   } catch (error) {
     res.status(500).send("Error del servidor");
@@ -38,7 +38,7 @@ router.get("/:pid", async (req, res) => {
 
 // Metodos POST
 router.post("/", async (req, res) => {
-  const  { title, description, price, img, code, stock, category } = req.body;
+  const { title, description, price, img, code, stock, category } = req.body;
 
   try {
     const nuevoProducto = await manager.addProduct(
@@ -51,12 +51,11 @@ router.post("/", async (req, res) => {
       category
     );
 
-    if (!nuevoProducto) {
-        res.status(400).send("Error al agregar el producto");
-    }else{
-        res.status(201).send(nuevoProducto);
-      }
-
+    if (nuevoProducto) {
+      res.status(201).send(nuevoProducto);
+    } else {
+      res.status(400).send("Error al agregar el producto");
+    }
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
   }
