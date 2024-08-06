@@ -75,32 +75,21 @@ router.post("/:cid/product/:pid", async (req, res) => {
 });
 
 /// ELIMINAR
-router.delete("/del/2", async (req,res) => {
-  const carritoId = parseInt(req.params.cid); 
-  
-  try{
-    
-  }
-  catch(error){
-    res.status(500).send("Error al eliminar el carrito", error);
-  }
-});
+router.delete("/del/:cid", async (req,res) => {
+  const carritoId = parseInt(req.params.cid);
 
-
-/// ELIMINAR PRODUCTO DE CARRITO 
-router.delete("/del/2", async (req,res) => {
-  const carritoId = parseInt(req.params.cid); 
-
-  try{
-
-  }
-  catch(error){
-    res.status(500).send("Error al eliminar el carrito", error);
+  try {
+    const result = await cartManager.deleteCartById(carritoId);
+    if (result) {
+      res.status(200).send(`Se ha eliminado el carrito con el id ${carritoId}`);
+    }
+  } catch (error) {
+    res.status(500).send("Error al eliminar el carrito");
   }
 });
 
 // actualizar carrito
-router.put("/del/2", async (req,res) => {
+router.put("/", async (req,res) => {
   const carritoId = parseInt(req.params.cid); 
 
   try{

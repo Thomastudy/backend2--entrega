@@ -110,6 +110,34 @@ class ProductManager {
   async guardarArchivo(arrayProductos) {
     await writeFile(this.path, JSON.stringify(arrayProductos, null, 2));
   }
+
+  async deleteProductById(idProducto) {
+    try {
+      // Buscar la ubicación del producto en el array de productos
+      const indexCart = this.products.findIndex(
+        (product) => product.id === idProducto
+      );
+
+      // Si no hay ningún producto con el id solicitado, lanzar un error
+      if (indexCart !== -1) {
+        // Eliminar el producto del array
+        this.products.splice(indexCart, 1);
+        await this.guardarArchivo(this.products);
+
+        // return tue para que sea un resultado booleano para que el ruter vea que se cumple con el objetivo
+        return true
+      } else {
+        throw new Error("No existe un producto con ese id");
+      }
+
+      // Guardar los cambios
+    } catch (error) {
+      console.error("Error al eliminar el producto:", error);
+      throw error;
+    }
+  }
+
+
 }
 
 export { ProductManager };

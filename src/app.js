@@ -1,17 +1,57 @@
+/* IMPORTACIONES */
+
 import express from "express";
+import {engine} from "express-handlebars";
+import { Server } from "socket.io";
 
 // Importacion de Routers
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
+import viewsRouter from "./routes/views.router.js";
 
 /* Configuracion de puerto */
 // declaro app como express para que sea mas facil y mas visual
 const app = express();
+
 // declaro en que puerto se va a correr, facilitando y optimizando
 const PUERTO = 8080;
 
+/*////////////////////
+
+MIDDLEWARE
+
+//////////////////////
+*/
+
 //Middleware: aca le digo al servidor que voy a usar formato json
 app.use(express.json());
+//esto le dice a la app que va a recibir datos complejos
+app.use(express.urlencoded({extended:true}));
+
+app.use(express.static("./src/public"));
+
+
+/*////////////////////
+
+CONFIGURACION EXPRESS-HANDLEBARS
+
+//////////////////////
+*/
+app.engine("handlebars", engine())
+app.set("view engine", "handlebars")
+app.set("views", "./src/views")
+
+
+/*///////////////////
+
+APIS/RUTAS
+
+/////////////////////
+*/
+
+
+//Ruta principal donde se vera representado el front
+app.use("/products", viewsRouter)
 
 // llama a la api products parausar sus funcionalidades 
 app.use("/api/products", productsRouter);
@@ -20,8 +60,19 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 
 // VINCULA EL SERVIDOR
-app.listen(PUERTO, () => {
+const httpServer = app.listen(PUERTO, () => {
   // cuando el puerto esta escuchando lo comunca a traves de la consola
   console.log(`escuchando en el puerto: http://localhost:${PUERTO}`);
 });
 
+/*/////////////////////////
+
+SERVER
+
+///////////////////////////*/
+
+const io = new Server(httpServer)
+
+io.on("conection", () =>{
+  console.log("un nuevo cliente")
+})

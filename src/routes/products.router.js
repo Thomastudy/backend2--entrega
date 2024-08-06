@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { ProductManager } from "../controlers/product-manager.js";
-
 // instancia para "product manager"
 const manager = new ProductManager("./src/data/products.json");
 const products = manager.getProducts();
+// instalacion router para las rutas
 const router = Router();
 
 /// Metodos GET
@@ -58,6 +58,21 @@ router.post("/", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
+  }
+});
+
+
+/// ELIMINAR
+router.delete("/del/:pid", async (req,res) => {
+  const productID = parseInt(req.params.pid);
+
+  try {
+    const result = await manager.deleteProductById(productID);
+    if (result) {
+      res.status(200).send(`Se ha eliminado el producto con el id ${productID}`);
+    }
+  } catch (error) {
+    res.status(500).send("Error al eliminar el producto");
   }
 });
 

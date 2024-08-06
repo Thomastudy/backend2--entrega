@@ -2,7 +2,6 @@ import { readFile, writeFile } from "fs/promises";
 
 // CartManager es la clase principal que va a ser llamada desde la app.js
 class CartManager {
-
   // constructor
   constructor(path) {
     this.path = path;
@@ -10,21 +9,21 @@ class CartManager {
     this.ultId = 0;
 
     // Cargar los carritos almacenados en el archivo:
-    this.cargarCarritos().catch(error => console.error("Error al cargar los carritos en el constructor:", error));
-
+    this.cargarCarritos().catch((error) =>
+      console.error("Error al cargar los carritos en el constructor:", error)
+    );
   }
   async cargarCarritos() {
     try {
-
       const data = await readFile(this.path, "utf-8");
       this.carts = JSON.parse(data);
-      
+
       // console.log("Datos del archivo cargados:", this.carts); // para controlar que se cargue bien
       if (this.carts.length > 0) {
         // verifico si hay x lo menos un elemento y calculo el ultimo id
         this.ultId = Math.max(...this.carts.map((cart) => cart.id));
       }
-      return this.carts
+      return this.carts;
     } catch {
       console.log("Error al cargar el carrito");
 
@@ -86,7 +85,31 @@ class CartManager {
     return carrito;
   }
 
+  async deleteCartById(idCarrito) {
+    try {
+      // Buscar la ubicación del carrito en el array de carritos
+      const indexCart = this.carts.findIndex(
+        (carrito) => carrito.id === idCarrito
+      );
 
+      // Si no hay ningún carrito con el id solicitado, lanzar un error
+      if (indexCart !== -1) {
+        // Eliminar el carrito del array
+        this.carts.splice(indexCart, 1);
+        await this.guardarCarritos();
+
+        // return tue para que sea un resultado booleano para que el ruter vea que se cumple con el objetivo
+        return true
+      } else {
+        throw new Error("No existe un carrito con ese id");
+      }
+
+      // Guardar los cambios
+    } catch (error) {
+      console.error("Error al eliminar el carrito:", error);
+      throw error;
+    }
+  }
 }
 
 export { CartManager };

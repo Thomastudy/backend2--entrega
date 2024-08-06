@@ -10,16 +10,6 @@
     "category": "pulseras"
   },
   {
-    "id": 2,
-    "title": "Pulsera Rome",
-    "description": "estan re buenos",
-    "price": 150,
-    "img": "img/productos/pulseraRome.jpeg",
-    "code": "PulseraRome",
-    "stock": 5,
-    "category": "pulseras"
-  },
-  {
     "id": 3,
     "title": "Cadena Corallo",
     "description": "estan re buenos",
@@ -30,26 +20,6 @@
     "category": "collares"
   },
   {
-    "id": 4,
-    "title": "Aros Ojo Turco",
-    "description": "estan re buenos",
-    "price": 300,
-    "img": "img/productos/arosojoturco.jpeg",
-    "code": "ArosOjoTurco",
-    "stock": 5,
-    "category": "aritos"
-  },
-  {
-    "id": 5,
-    "title": "Ear Cuffs Moon",
-    "description": "estan re buenos",
-    "price": 280,
-    "img": "img/productos/EarCuffsMoon.jpeg",
-    "code": "EarCuffsMoon",
-    "stock": 5,
-    "category": "aritos"
-  },
-  {
     "id": 6,
     "title": "Aros Siena",
     "description": "estan re buenos",
@@ -58,5 +28,25 @@
     "code": "ArosSiena",
     "stock": 5,
     "category": "aritos"
+  },
+  {
+    "id": 7,
+    "title": "Cadena Iris",
+    "description": "estan re buenos",
+    "price": 250,
+    "img": "img/productos/cadenaIris.jpeg",
+    "code": "CadenaIris",
+    "stock": 5,
+    "category": "collares"
+  },
+  {
+    "id": 8,
+    "title": "Pulsera Atenea  - acero dorado",
+    "description": "estan re buenos",
+    "price": 200,
+    "img": "img/productos/pulseraAtenea.jpeg",
+    "code": "PulseraAtenea",
+    "stock": 5,
+    "category": "pulseras"
   }
 ]
