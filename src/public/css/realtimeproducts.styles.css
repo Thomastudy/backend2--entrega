@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+  text-align: center;
+  padding: 2rem;
+  max-width: 90%;
+  flex-wrap: wrap;
+}
+
+.card {
+  background-color: var(--gris-cards);
+  border-radius: 5%;
+  padding: 2rem 1rem;
+  min-width: 40rem;
+  margin: auto;
+}
+button {
+  border: none;
+  background-color: var(--negro);
+  color: var(--blanco);
+  padding: 0.5rem 1rem;
+  margin: 1rem;
+  min-width: 3rem;
+  border-radius: 10%;
+  cursor: pointer;
+}

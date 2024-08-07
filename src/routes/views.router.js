@@ -7,7 +7,7 @@ const router = Router();
 
 
 //Ruta principal donde se vera representado el front
-router.get("/", async(req,res) =>{
+router.get("/products", async(req,res) =>{
     const products = await manager.getProducts()
 
     res.render("index", {products})

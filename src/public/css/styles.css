@@ -1,0 +1,21 @@
+:root {
+  --negro: #2a2a2a;
+  --blanco: #fff;
+  --gris-cards: rgb(239, 239, 239);
+}
+
+html {
+  font-size: 10px;
+}
+body {
+  font-size: 1.6rem;
+}
+h2 {
+  font-size: 2.8rem;
+}
+p {
+  font-size: 1.8rem;
+}
+h2 {
+  font-size: 2.8rem;
+}
