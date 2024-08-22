@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { ProductManager } from "../controlers/product-manager.js";
+import { ProductManager } from "../dao/db/product-manager-db.js";
+
 // instancia para "product manager"
-const manager = new ProductManager("./src/data/products.json");
-const products = manager.getProducts();
+const manager = new ProductManager();
 // instalacion router para las rutas
 const router = Router();
 
@@ -12,9 +12,9 @@ const router = Router();
 router.get("/", async (req, res) => {
   try {
     const products = await manager.getProducts();
-    res.send(products);
+    res.json(products);
   } catch (error) {
-    res.status(500).send("Error del servidor");
+    res.status(500).json("Error del servidor");
   }
 });
 
@@ -23,16 +23,16 @@ router.get("/:pid", async (req, res) => {
   let id = req.params.pid;
 
   try {
-    const product = await manager.getProductsById(parseInt(id));
+    const product = await manager.getProductsById(id);
 
     if (!product) {
-      res.send("Prdoducto no encontrado");
+      res.json("Prdoducto no encontrado");
     } else {
-      res.send(product);
+      res.json(product);
     }
   } catch (error) {
     console.error("Error al obtener el producto por ID:", error);
-    res.status(500).send("Error al obtener el producto");
+    res.status(500).json("Error al obtener el producto");
   }
 });
 
@@ -41,38 +41,44 @@ router.post("/", async (req, res) => {
   const { title, description, price, img, code, stock, category } = req.body;
 
   try {
-    const nuevoProducto = await manager.addProduct(
-      title,
-      description,
-      price,
-      img,
-      code,
-      stock,
-      category
-    );
+    const result = await manager.addProduct({ title, description, price, img, code, stock, category });
 
-    if (nuevoProducto) {
-      res.status(201).send(nuevoProducto);
+    if (result) {
+      res.status(201).json(result);
     } else {
-      res.status(400).send("Error al agregar el producto");
+      res.status(400).json("Error al agregar el producto");
     }
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
   }
 });
 
+/// Actualizar por id
+router.put("/:pid", async (req, res) => {
+  const productosActualizado = req.body;
+  const id = req.params.pid;
+
+  try {
+    await manager.updateProducts(id, productosActualizado);
+    res.status(201).json(productosActualizado);
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+});
 
 /// ELIMINAR
-router.delete("/del/:pid", async (req,res) => {
-  const productID = parseInt(req.params.pid);
+router.delete("/del/:pid", async (req, res) => {
+  const productID = req.params.pid;
 
   try {
     const result = await manager.deleteProductById(productID);
     if (result) {
-      res.status(200).send(`Se ha eliminado el producto con el id ${productID}`);
+      res
+        .status(200)
+        .json(`Se ha eliminado el producto con el id ${productID}`);
     }
   } catch (error) {
-    res.status(500).send("Error al eliminar el producto");
+    res.status(500).json("Error al eliminar el producto");
   }
 });
 

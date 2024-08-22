@@ -8,6 +8,8 @@ import { Server } from "socket.io";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
+import database from "./database.js";
+import { ProductManager } from "./dao/db/product-manager-db.js";
 
 /* Configuracion de puerto */
 // declaro app como express para que sea mas facil y mas visual
@@ -59,7 +61,7 @@ app.use("/api/carts", cartsRouter);
 // VINCULA EL SERVIDOR
 const httpServer = app.listen(PUERTO, () => {
   // cuando el puerto esta escuchando lo comunca a traves de la consola
-  console.log(`escuchando en el puerto: http://localhost:${PUERTO}`);
+  console.log(`Escuchando en el puerto: http://localhost:${PUERTO}`);
 });
 
 /*/////////////////////////
@@ -68,9 +70,9 @@ SERVER
 
 ///////////////////////////*/
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Apuntes: traigan el ProductManager:
-import { ProductManager } from "./controlers/product-manager.js";
-const manager = new ProductManager("./src/data/products.json");
+const manager = new ProductManager();
 
 const io = new Server(httpServer);
 
@@ -81,11 +83,36 @@ io.on("connection", async (socket) => {
   socket.emit("products", await manager.getProducts());
   //Con un evento y el metodo "on" lo escuchas desde el  main.js y lo mostras por pantalla.
 
-  // //Recibimos el evento "eliminarProducto" desde el cliente y borramos con el metodo borrar:
-  socket.on("eliminarProducto", async (id) => {
+  // //Recibimos el evento "deleteProduct" desde el cliente y borramos con el metodo borrar:
+  socket.on("deleteProduct", async (id) => {
     await manager.deleteProductById(id);
-
-    //Despues de borrar le envio los productos actualizados al cliente:
-    io.sockets.emit("products", await manager.getProducts());
   });
+
+  // //Recibimos el evento "updateProduct" desde el cliente y actualizamos con el metodo update:
+  socket.on("updateProduct", async ({ id, stock }) => {
+    try {
+      console.log({ id, stock });
+
+      await manager.updateProductStock({ idProducto: id, stock });
+      const products = await products.find(); // Obtén la lista actualizada de productos
+      io.emit("products", products);
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
+  });
+  // //Recibimos el evento "addProduct" desde el cliente y agregamos con el metodo addproduct:
+  socket.on("addProduct", async (formValues) => {
+    try {
+      const result = await manager.addProduct(formValues);
+
+      if (result) {
+        console.log("Nuevo producto agregado correctamente");
+      }
+    } catch (error) {
+      console.error("Error adding product:", error);
+    }
+  });
+
+  // //Despues de borrar le envio los productos actualizados al cliente:
+  io.sockets.emit("products", await manager.getProducts());
 });

@@ -1,14 +1,27 @@
+<link rel="stylesheet" href="/css/index.style.css" />
+
 <h1>Mis poductos</h1>
 
-<a href="./realtimeproducts">realtimeproductos</a>
+<a href="./realtimeproducts">realtimeproductos</a><br />
 <div class="ContenedorProductos">
-  {{#each products}}
-    <div class="card">
-      <h2>{{this.title}}</h2>
-      <p>{{this.stock}}</p>
-      <p>{{this.price}}</p>
-      <button>Comprar</button>
-    </div>
-  {{/each}}
+  <div class="contenedor">
+
+    {{#each products}}
+      <div class="producto">
+        <div class="div--producto__imagen">
+          <img
+            class="producto__imagen"
+            src={{this.img}}
+            alt="Imagen de {{this.title}}"
+          /></div>
+        <div class="producto__informacion">
+          <h2 class="producto__nombre">{{this.title}}</h2>
+          <p class="producto__precio-r"><b>{{this.price}}</b></p>
+          <p class="producto__precio-r">stock: {{this.stock}}</p>
+        </div>
+
+      </div>
+    {{/each}}
+  </div>
 
 </div>

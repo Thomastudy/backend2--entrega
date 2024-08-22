@@ -21,22 +21,83 @@ const renderProducts = (products) => {
 
     card.innerHTML = `
                     <h2>${item.title}</h2>
-                    <p>ID: ${item.id}</p>
+                    <p>ID: ${item._id}</p>
                     <p>Stock: ${item.stock}</p>
-                    <button id="+">+</button><button> - </button>
+                    <button class="increment-btn">+</button><button class="decrement-btn"> - </button>
                     <p>${item.price}</p>
-                    <button id="delete">eliminar</button>`;
+                    <button class="delete">eliminar</button>`;
 
     containerProducts.appendChild(card);
 
-    // card.querySelector("#+").addEventListener("click", () => {
-      // (item.stock+1)});
-    card.querySelector("#delete").addEventListener("click", () => {
-      eliminarProducto(item.id);
+    card.querySelector(".increment-btn").addEventListener("click", () => {
+      item.stock++;
+      updateProduct(item._id, item.stock);
+    });
+    card.querySelector(".decrement-btn").addEventListener("click", () => {
+      if (item.stock > 0) {
+        item.stock--;
+      } else {
+        console.log("no se puede bajar mas");
+      }
+      updateProduct(item._id, item.stock);
+    });
+    card.querySelector(".delete").addEventListener("click", () => {
+      deleteProduct(item._id);
     });
   });
 };
 
-const eliminarProducto = (id) => {
-  socket.emit("eliminarProducto", id);
+const deleteProduct = (id) => {
+  socket.emit("deleteProduct", id);
 };
+const updateProduct = (id, stock) => {
+  socket.emit("updateProduct", { id, stock });
+};
+
+//////////////////////////////
+//////// SWEAT ALERT /////////
+//////////////////////////////
+
+const addProductWthBtn = async () => {
+  const { value: formValues } = await Swal.fire({
+    title: "Agregar producto",
+    html: `
+    <input id="add-input-title" class="swal2-input" placeholder="Titulo">
+    <input id="add-input-description" class="swal2-input" placeholder="Descripción">
+    <input id="add-input-price" class="swal2-input" type="number" min="1" placeholder= "Precio">
+    <input id="add-input-img" class="swal2-input" placeholder="Imagen url" >
+    <input id="add-input-code" class="swal2-input" placeholder="Codigo" >
+    <input id="add-input-stock" class="swal2-input" type="number" min="0"  placeholder="Stock" >
+    <select id="add-input-category" class="swal2-input">
+      <option value="Aritos" disabled selected>Aritos</option>
+      <option value="Collares">Collares</option>
+      <option value="Pulseras">Pulseras</option>
+    </select> 
+    `,
+    focusConfirm: true,
+    preConfirm: () => {
+      const valoresInput = [
+        document.getElementById("add-input-title").value,
+        document.getElementById("add-input-description").value,
+        document.getElementById("add-input-price").value,
+        document.getElementById("add-input-img").value,
+        document.getElementById("add-input-code").value,
+        document.getElementById("add-input-stock").value,
+        document.getElementById("add-input-category").value,
+      ];
+      return valoresInput;
+    },
+  });
+  if (formValues) {
+    console.log("Producto agregado:", formValues);
+    // Aquí podrías realizar una petición para agregar el producto a tu base de datos
+    addProduct([formValues]);
+  }
+};
+const addProduct = (productData) => {
+  socket.emit("addProduct", productData);
+};
+
+document.querySelector("#addProductBtn").addEventListener("click", () => {
+  addProductWthBtn();
+});

@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { CartManager } from "../controlers/cart-manager.js";
-const cartManager = new CartManager("./src/data/carts.json");
+import { CartManager } from "../dao/db/cart-manager-db.js";
 
+const Manager = new CartManager();
 // declaramos router para facilitar su uso
 const router = Router();
 
@@ -9,7 +9,7 @@ const router = Router();
 router.get("/", async (req, res) => {
   // Try declara que al ser llamago el get, va a intentar hacer lo siguiente...
   try {
-    const carts = await cartManager.cargarCarritos();
+    const carts = await Manager.getCarts();
     res.send(carts);
   } catch {
     // catch declara lo que se va a hacer en caso de error
@@ -18,11 +18,32 @@ router.get("/", async (req, res) => {
   }
 });
 
+/*  GET/:cid
+ */
+router.get("/:cid", async (req, res) => {
+  const carritoId = req.params.cid;
+  /* carritoId: recive cual es el id que se quiere consultar.
+   */
+
+  try {
+    const carritoBusado = await Manager.getCartById(carritoId);
+
+    if (!carritoBusado) {
+      res.send("Carrito no encontrado");
+    } else {
+      res.json(carritoBusado.products); // devuelve el carrito solicitado a traves del id
+    }
+  } catch (error) {
+    console.error("Error al obtener el carrito por ID:", error);
+    res.status(500).send("Error al obtener el carrito");
+  }
+});
+
 // POST sirve para llamar al JSON y agregar los productos a traves de la funcion crearCarrito desde CartManager.
 router.post("/", async (req, res) => {
   // Try declara que al ser llamago el post, va a intentar hacer lo siguiente...
   try {
-    const nuevoCarrito = await cartManager.crearCarrito();
+    const nuevoCarrito = await Manager.newCart();
     res.status(201).json(nuevoCarrito);
   } catch (error) {
     // catch declara lo que se va a hacer en caso de error
@@ -34,26 +55,9 @@ router.post("/", async (req, res) => {
   // res.send({status: "succes" , message: "Carrito creado correctamente" })
 });
 
-/*  GET/:cid
- */
-router.get("/:cid", async (req, res) => {
-  const carritoId = parseInt(req.params.cid);
-  /* carritoId: recive cual es el id que se quiere consultar.
-  parseInt() se utiliza para convertir un str en un Int
-  params son los parámetros de ruta en una URL, que permiten capturar valores dinámicos definidos en la ruta del servidor. */
-
-  try {
-    const carritoBusado = await cartManager.getCarritoById(carritoId);
-    res.json(carritoBusado.products);// devuelve el carrito solicitado a traves del id
-  } catch (error) {
-    console.error("Error al obtener el carrito por ID:", error);
-    res.status(500).send("Error al obtener el carrito");
-  }
-});
-
 // post/:cid/products/:pid
 router.post("/:cid/product/:pid", async (req, res) => {
-  const carritoId = parseInt(req.params.cid);
+  const carritoId = req.params.cid;
   /* carritoId: recive cual es el id que se quiere consultar.
   parseInt() se utiliza para convertir un str en un Int
   params son los parámetros de ruta en una URL, que permiten capturar valores dinámicos definidos en la ruta del servidor. */
@@ -62,7 +66,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
   const quantity = req.body.quantity || 1;
 
   try {
-    const carritoActualizado = await cartManager.agregarProductoAlCarrito(
+    const carritoActualizado = await Manager.addProdToCart(
       carritoId,
       productoId,
       quantity
@@ -75,8 +79,8 @@ router.post("/:cid/product/:pid", async (req, res) => {
 });
 
 /// ELIMINAR
-router.delete("/del/:cid", async (req,res) => {
-  const carritoId = parseInt(req.params.cid);
+router.delete("/del/:cid", async (req, res) => {
+  const carritoId = req.params.cid;
 
   try {
     const result = await cartManager.deleteCartById(carritoId);
@@ -89,16 +93,13 @@ router.delete("/del/:cid", async (req,res) => {
 });
 
 // actualizar carrito
-router.put("/", async (req,res) => {
-  const carritoId = parseInt(req.params.cid); 
+router.put("/", async (req, res) => {
+  const carritoId = parseInt(req.params.cid);
 
-  try{
-
-  }
-  catch(error){
+  try {
+  } catch (error) {
     res.status(500).send("Error al eliminar el carrito", error);
   }
 });
-
 
 export default router;

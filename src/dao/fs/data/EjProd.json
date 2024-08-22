@@ -1,0 +1,111 @@
+[
+    {
+        "title": "Aros Amor - Dorado",
+        "description":"estan re buenos",
+        "price": 280,
+        "img": "https://d36ojrfcsde8qb.cloudfront.net/arosamordorado.jpeg",
+        "code": "ArosAmorD",
+        "stock":5,
+        "category": "aritos"
+    },
+    {
+        "title": "Aros Amor",
+        "description":"estan re buenos",
+        "price": 280,
+        "img": "https://d36ojrfcsde8qb.cloudfront.net/arosamor.jpg",
+        "code": "ArosAmorP",
+        "stock":5,
+        "category": "aritos"
+    },
+    {
+        "title": "Aros Cronos",
+        "description":"estan re buenos",
+        "price": 300,
+        "img": "https://d36ojrfcsde8qb.cloudfront.net/aroscronos.jpeg",
+        "code": "ArosCronos",
+        "stock":5,
+        "category": "aritos"
+    },
+    {
+        "title": "Aros Siena",
+        "description":"estan re buenos",
+        "price": 290,
+        "img": "https://d36ojrfcsde8qb.cloudfront.net/arossiena.jpeg",
+        "code": "ArosSiena",
+        "stock":5,
+        "category": "aritos"
+    },
+    {
+        "title": "Aros Ojo Turco",
+        "description":"estan re buenos",
+        "price": 300,
+        "img": "https://d36ojrfcsde8qb.cloudfront.net/arosojoturco.jpeg",
+        "code": "ArosOjoTurco",
+        "stock":5,
+        "category": "aritos"
+    },
+    {
+        "title": "Ear Cuffs Moon",
+        "description":"estan re buenos",
+        "price": 280,
+        "img": "https://d36ojrfcsde8qb.cloudfront.net/earcuffsmoon.jpeg",
+        "code": "EarCuffsMoon",
+        "stock":5,
+        "category": "aritos"
+    },
+    {
+        "title": "Ear Cuff Positano",
+        "description":"estan re buenos",
+        "price": 200,
+        "img": "https://d36ojrfcsde8qb.cloudfront.net/earcuffpositano.jpeg",
+        "code": "EarCuffPositano",
+        "stock":5,
+        "category": "aritos"
+    },
+    {
+        "title": "Cadena Corallo",
+        "description":"estan re buenos",
+        "price": 250,
+        "img": "https://d36ojrfcsde8qb.cloudfront.net/cadenacorallo.jpeg",
+        "code": "CadenaCorallo",
+        "stock":5,
+        "category": "collares"
+    },
+    {
+        "title": "Cadena Iris",
+        "description":"estan re buenos",
+        "price": 250,
+        "img": "https://d36ojrfcsde8qb.cloudfront.net/cadenairis.jpeg",
+        "code": "CadenaIris",
+        "stock":5,
+        "category": "collares"
+    },
+    {
+        "title": "Pulsera Atenea  - acero dorado",
+        "description":"estan re buenos",
+        "price": 200,
+        "img": "https://d36ojrfcsde8qb.cloudfront.net/pulseraatenea.jpeg",
+        "code": "PulseraAtenea",
+        "stock":5,
+        "category": "pulseras"
+    },
+    {
+        "title": "Pulsera Rome",
+        "description":"estan re buenos",
+        "price": 150,
+        "img": "https://d36ojrfcsde8qb.cloudfront.net/pulserarome.jpeg",
+        "code": "PulseraRome",
+        "stock":5,
+        "category": "pulseras"
+    },
+    {
+        "title": "PulseraArcher - acero dorado / plateado",
+        "description":"estan re buenos",
+        "price": 300,
+        "img": "./https://d36ojrfcsde8qb.cloudfront.net/pulseraarcher.jpeg",
+        "code": "PulseraArcher",
+        "stock":5,
+        "category": "pulseras"
+    }
+
+]
