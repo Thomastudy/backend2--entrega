@@ -10,9 +10,11 @@ const router = Router();
 
 // Get inicial
 router.get("/", async (req, res) => {
+  let limit = parseInt(req.query.limit) || 10;
   try {
     const products = await manager.getProducts();
-    res.json(products);
+    const limitedProducts = products.slice(0, limit);
+    res.json(limitedProducts);
   } catch (error) {
     res.status(500).json("Error del servidor");
   }
@@ -41,7 +43,15 @@ router.post("/", async (req, res) => {
   const { title, description, price, img, code, stock, category } = req.body;
 
   try {
-    const result = await manager.addProduct({ title, description, price, img, code, stock, category });
+    const result = await manager.addProduct({
+      title,
+      description,
+      price,
+      img,
+      code,
+      stock,
+      category,
+    });
 
     if (result) {
       res.status(201).json(result);

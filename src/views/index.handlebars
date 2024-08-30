@@ -2,8 +2,8 @@
 
 <h1>Mis poductos</h1>
 
-<a href="./realtimeproducts">realtimeproductos</a><br />
-<div class="ContenedorProductos">
+<div class="mainContenedor">
+  <a href="./realtimeproducts">realtimeproductos</a><br />
   <div class="contenedor">
 
     {{#each products}}
@@ -23,5 +23,21 @@
       </div>
     {{/each}}
   </div>
+
+  {{#if hasPrevPage}}
+    <a href="/products?page={{prevPage}}">Anterior
+    </a>
+  {{/if}}
+  {{#if hasPrevPage}}
+    {{#if hasNextPage}}
+      <p>-</p>
+    {{/if}}
+  {{/if}}
+
+  {{#if hasNextPage}}
+    <a href="/products?page={{nextPage}}">Siguiente
+    </a>
+  {{/if}}
+  <p>Pagina {{currentPage}} de {{totalPages}}</p>
 
 </div>

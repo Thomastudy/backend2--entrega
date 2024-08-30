@@ -4,7 +4,6 @@ const socket = io();
 // escuchar evento "products" de app.js y recibir array
 socket.on("products", (data) => {
   renderProducts(data);
-  console.log(data);
 });
 
 const renderProducts = (products) => {
@@ -76,22 +75,22 @@ const addProductWthBtn = async () => {
     `,
     focusConfirm: true,
     preConfirm: () => {
-      const valoresInput = [
-        document.getElementById("add-input-title").value,
-        document.getElementById("add-input-description").value,
-        document.getElementById("add-input-price").value,
-        document.getElementById("add-input-img").value,
-        document.getElementById("add-input-code").value,
-        document.getElementById("add-input-stock").value,
-        document.getElementById("add-input-category").value,
-      ];
-      return valoresInput;
+      const title = document.getElementById("add-input-title").value;
+      const description = document.getElementById(
+        "add-input-description"
+      ).value;
+      const price = parseInt(document.getElementById("add-input-price").value);
+      const img = document.getElementById("add-input-img").value;
+      const code = document.getElementById("add-input-code").value;
+      const stock = parseInt(document.getElementById("add-input-stock").value);
+      const category = document.getElementById("add-input-category").value;
+      return { title, description, price, img, code, stock, category };
     },
   });
+
   if (formValues) {
-    console.log("Producto agregado:", formValues);
-    // Aquí podrías realizar una petición para agregar el producto a tu base de datos
-    addProduct([formValues]);
+    // Enviar los datos a la función que maneja el socket
+    addProduct(formValues);
   }
 };
 const addProduct = (productData) => {
