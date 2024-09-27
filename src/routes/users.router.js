@@ -3,7 +3,9 @@ import UserModel from "../dao/models/user.model.js";
 import jwt from "jsonwebtoken";
 import { createHash, isValidPassword } from "../utils/utils.js";
 import passport from "passport";
+import { CartManager } from "../dao/db/cart-manager-db.js";
 
+const cartManager = new CartManager();
 const router = Router();
 
 router.post("/register", async (req, res) => {
@@ -26,7 +28,8 @@ router.post("/register", async (req, res) => {
         .status(400)
         .send("Completar todos los datos para poder registrarse");
     }
-    const nuevoUsuario = new UserModel({
+    const nuevoCarrito = await cartManager.newCart();
+    const nuevoUsuario = await new UserModel({
       first_name,
       last_name,
       user,
@@ -34,6 +37,7 @@ router.post("/register", async (req, res) => {
       birth,
       password: createHash(password),
       role: "user",
+      cartID: nuevoCarrito._id,
     });
     await nuevoUsuario.save();
 
@@ -50,7 +54,7 @@ router.post("/register", async (req, res) => {
 
     res.redirect("/api/sessions/home");
   } catch (error) {
-    res.status(500).send("Error interno del servidor");
+    res.status(500).send("Error interno del servidor, " + error);
   }
 });
 
@@ -70,7 +74,11 @@ router.post("/login", async (req, res) => {
 
     // generar el nuevo token jwt
     const token = jwt.sign(
-      { user: existeUsuario.user, role: existeUsuario.role },
+      {
+        user: existeUsuario.user,
+        role: existeUsuario.role,
+        cartID: existeUsuario.cartID,
+      },
       "cr7.suuuuuuu",
       {
         expiresIn: "1h",

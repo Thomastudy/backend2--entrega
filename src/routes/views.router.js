@@ -13,7 +13,6 @@ router.get("/", async (req, res) => {
   res.redirect("/login");
 });
 
-
 //Ruta principal donde se vera representado el front
 router.get(
   "/products",
@@ -36,6 +35,7 @@ router.get(
       res.render("index", {
         user: req.user.user,
         admin: isAdmin,
+        cartID: req.user.cartID,
         products: listProductsFinal,
         hasPrevPage: listProducts.prevPage,
         hasNextPage: listProducts.nextPage,
