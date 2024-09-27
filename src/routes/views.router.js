@@ -1,4 +1,5 @@
 import { Router } from "express";
+import jwt from "jsonwebtoken";
 import { ProductManager } from "../dao/db/product-manager-db.js";
 import productModel from "../dao/models/product.model.js";
 
@@ -43,8 +44,15 @@ router.get("/realtimeproducts", async (req, res) => {
   res.render("realtimeproducts");
 });
 
-router.get("/", async (req, res) => {
+router.get("/home", async (req, res) => {
   res.render("mainpage");
+});
+
+router.get("/register", async (req, res) => {
+  res.render("register");
+});
+router.get("/login", async (req, res) => {
+  res.render("login");
 });
 
 export default router;

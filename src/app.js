@@ -3,13 +3,21 @@
 import express from "express";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
+import cookieParser from "cookie-parser";
 
+// Database
+import "./database.js";
 // Importacion de Routers
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
-import database from "./database.js";
+import usersRouter from "./routes/users.router.js";
+
+// Importacion de Manager
 import { ProductManager } from "./dao/db/product-manager-db.js";
+// Passport config
+import passport from "passport";
+import initializePassport from "./config/passport.config.js";
 
 /* Configuracion de puerto */
 // declaro app como express para que sea mas facil y mas visual
@@ -29,8 +37,13 @@ MIDDLEWARE
 app.use(express.json());
 //esto le dice a la app que va a recibir datos complejos
 app.use(express.urlencoded({ extended: true }));
-
+// Hace que busque las cosas llamandolas desde esta ubicacion
 app.use(express.static("./src/public"));
+// usar las cookies
+app.use(cookieParser());
+// passport config middleware
+initializePassport();
+app.use(passport.initialize());
 
 /*////////////////////
 
@@ -38,7 +51,16 @@ CONFIGURACION EXPRESS-HANDLEBARS
 
 //////////////////////
 */
-app.engine("handlebars", engine());
+app.engine(
+  "handlebars",
+  engine({
+    helpers: {
+      eq: function (a, b) {
+        return a === b;
+      },
+    },
+  })
+);
 app.set("view engine", "handlebars");
 app.set("views", "./src/views");
 
@@ -49,18 +71,34 @@ APIS/RUTAS
 /////////////////////
 */
 
+/*///////////////////////////////
+          VIEWSSSS
+///////////////////////////////*/
+
 //Ruta principal donde se vera representado el front
 app.use("/", viewsRouter);
 
-// llama a la api products parausar sus funcionalidades
+/*///////////////////////////////
+          PRODUCTS
+///////////////////////////////*/
+// llama a la api products para usar sus funcionalidades
 app.use("/api/products", productsRouter);
 
-// llama a la api carts parausar sus funcionalidades
+/*///////////////////////////////
+          CARTS
+///////////////////////////////*/
+// llama a la api carts para usar sus funcionalidades
 app.use("/api/carts", cartsRouter);
+
+/*///////////////////////////////
+          SESSIONS
+///////////////////////////////*/
+// llama a la api sessions para usar sus funcionalidades
+app.use("/api/sessions", usersRouter);
 
 // VINCULA EL SERVIDOR
 const httpServer = app.listen(PUERTO, () => {
-  // cuando el puerto esta escuchando lo comunca a traves de la consola
+  // cuando el puerto esta escuchando lo comunica a traves de la consola
   console.log(`Escuchando en el puerto: http://localhost:${PUERTO}`);
 });
 

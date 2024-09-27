@@ -33,6 +33,7 @@ const productSchema = new mongoose.Schema({
   },
 });
 
+// mongoosePaginate es para hacer la paginacion de los productos y mostrarlos de a tandas
 productSchema.plugin(mongoosePaginate);
 
 const ProductModel = mongoose.model("products", productSchema);
