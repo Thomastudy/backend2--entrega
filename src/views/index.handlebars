@@ -1,9 +1,31 @@
 <link rel="stylesheet" href="/css/index.style.css" />
 
-<h1>Mis poductos</h1>
+<header class="header"></header>
+        <div></div>
+        <a href="/products" class="a_header__logo">
+            <img class="header__logo" src="img/logo.jpg" alt="Logotipo">
+        </a>
+        <div class="imgCarro" id="imgCarro" ><img src="img/shopbag.svg" class="pointer carrito" alt="carrito"></div>
+        <script>
+  document.querySelector("#imgCarro").addEventListener("click", () => {
+    alert("Paraa, el profe no nos explico eso todavia");
+  });
+</script>
+        
+    </header>
+<nav class="navegacion">
+  <p>Bienvenido! {{user}}</p>
+<form action="/api/sessions/logout" method="post">
+  <button type="submit">Log Out</button>
+</form>
+
+</nav>
 
 <div class="mainContenedor">
-  <a href="./realtimeproducts">realtimeproductos</a><br />
+<br>
+  {{#if admin}}
+    <a href="./realtimeproducts">realtimeproductos</a><br />
+  {{/if}}
   <div class="contenedor">
 
     {{#each products}}
@@ -41,3 +63,19 @@
   <p>Pagina {{currentPage}} de {{totalPages}}</p>
 
 </div>
+
+
+    <footer class="footer">
+        <div class="grid-footer">
+            <div class="iconos">
+                <a href="https://www.instagram.com/hali.accesorioss/"><i class="fa-brands fa-instagram icon"></a></i>
+                <a href="https://wa.me/+59895487760?text=Hola!%20Me%20interesa%20saber%20mas%20sobre%20sus%20productos."><i class="fa-brands fa-whatsapp icon"></a></i>
+            </div>
+            <div class="ubicaciones">
+                <p class="texto-ubicaciones">Montevideo - Punta del Este</p>
+                <p class="texto-ubicaciones">Hacemos envios</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="/js/main.js"></script>

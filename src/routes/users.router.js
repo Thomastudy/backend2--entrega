@@ -48,7 +48,7 @@ router.post("/register", async (req, res) => {
       httpOnly: true,
     });
 
-    res.redirect("/api/sessions/current");
+    res.redirect("/api/sessions/home");
   } catch (error) {
     res.status(500).send("Error interno del servidor");
   }
@@ -82,7 +82,7 @@ router.post("/login", async (req, res) => {
       maxAge: 3600000, //1h
       httpOnly: true,
     });
-    res.redirect("/api/sessions/current");
+    res.redirect("/api/sessions/home");
   } catch (error) {
     res.status(500).send("Error interno del servidor");
   }
@@ -102,6 +102,9 @@ router.get(
   passport.authenticate("current", { session: false }),
   (req, res) => {
     try {
+      if (req.user.role !== "admin") {
+        return res.status(403).send("Acceso denegado");
+      }
       res.render("mainpage", { user: req.user.user });
     } catch (error) {
       res.status(500).send(`Error interno en el servidor, ${error}`);
@@ -113,16 +116,15 @@ router.get(
 ////     ADMIN      ////
 ////////////////////////
 router.get(
-  "/admin",
+  "/home",
   passport.authenticate("current", { session: false }),
   (req, res) => {
     if (req.user.role !== "admin") {
-      return res.status(403).send("Acceso denegado");
+      return res.redirect("/products");
     }
+    // si es admin entra a la parte de edicion
+    return res.redirect("/api/sessions/current");
   }
-
-  // si es admin entra a la parte de edicion
-  
 );
 
 export default router;
