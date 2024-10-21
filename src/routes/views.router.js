@@ -1,11 +1,9 @@
 import { Router } from "express";
-import { ProductManager } from "../dao/db/product-manager-db.js";
 import productModel from "../dao/models/product.model.js";
 import passport from "passport";
-import { Admin } from "mongodb";
+import cartService from "../services/cart.service.js";
+import productService from "../services/product.service.js";
 
-// instancia para "product manager"
-const manager = new ProductManager();
 // instalacion router para las rutas
 const router = Router();
 
@@ -16,7 +14,7 @@ router.get("/", async (req, res) => {
 //Ruta principal donde se vera representado el front
 router.get(
   "/products",
-  passport.authenticate("current", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     let page = req.query.page || 1;
     let limit = 3;
@@ -28,12 +26,13 @@ router.get(
 
       // Puedo recuperar el doc y pasarlo a products
       const listProductsFinal = listProducts.docs.map((products) => {
-        const { _id, ...rest } = products.toObject();
-        return rest;
+        const showProducts = products.toObject();
+        return showProducts;
       });
 
       res.render("index", {
-        user: req.user.user,
+        userName: req.user.userName,
+        email: req.user.email,
         admin: isAdmin,
         cartID: req.user.cartID,
         products: listProductsFinal,
@@ -55,6 +54,45 @@ router.get(
 
 router.get("/realtimeproducts", async (req, res) => {
   res.render("realtimeproducts");
+});
+
+///////////////////////
+// inicio de usuario //
+///////////////////////
+
+router.get("/cart/:cid", async (req, res) => {
+  const cartID = req.params.cid;
+
+  try {
+    if (!cartID) {
+      return res.status(404).json({ message: "Error al recibir el id" });
+    }
+    const cart = await cartService.getCartById(cartID);
+    if (!cart) {
+      return res.status(404).json({ message: "Error al encontrar el carrito" });
+    }
+    if (cart.products.length === 0) {
+      return res.redirect("/products");
+    }
+    const productsInCart = await Promise.all(
+      cart.products.map(async (item) => {
+        const productDetails = await productService.getProductById(
+          item.product.toObject()._id
+        );
+        return {
+          product: productDetails.toObject(),
+          quantity: item.quantity,
+        };
+      })
+    );
+
+    res.render("cart", {
+      cartID: cartID,
+      products: productsInCart,
+    });
+  } catch (error) {
+    res.status(500).send("Error en el servidor: " + error);
+  }
 });
 
 ///////////////////////

@@ -14,10 +14,10 @@ import viewsRouter from "./routes/views.router.js";
 import usersRouter from "./routes/users.router.js";
 
 // Importacion de Manager
-import { ProductManager } from "./dao/db/product-manager-db.js";
 // Passport config
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
+import productController from "./controllers/product.controller.js";
 
 /* Configuracion de puerto */
 // declaro app como express para que sea mas facil y mas visual
@@ -109,8 +109,6 @@ SERVER
 ///////////////////////////*/
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Apuntes: traigan el ProductManager:
-const manager = new ProductManager();
 
 const io = new Server(httpServer);
 
@@ -118,12 +116,12 @@ io.on("connection", async (socket) => {
   console.log("Un cliente se conecto");
 
   //Le envian el array de productos a la vista realTimeProducts:
-  socket.emit("products", await manager.getProducts());
+  socket.emit("products", await productController.getProducts());
   //Con un evento y el metodo "on" lo escuchas desde el  main.js y lo mostras por pantalla.
 
   // //Recibimos el evento "deleteProduct" desde el cliente y borramos con el metodo borrar:
   socket.on("deleteProduct", async (id) => {
-    await manager.deleteProductById(id);
+    await productController.deleteProductById(id);
   });
 
   // //Recibimos el evento "updateProduct" desde el cliente y actualizamos con el metodo update:
@@ -131,7 +129,7 @@ io.on("connection", async (socket) => {
     try {
       console.log({ id, stock });
 
-      await manager.updateProductStock({ idProducto: id, stock });
+      await productController.updateProduct({ idProducto: id, stock });
       const products = await products.find(); // Obtén la lista actualizada de productos
       io.emit("products", products);
     } catch (error) {

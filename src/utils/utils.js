@@ -1,11 +1,13 @@
+
 import bcrypt from "bcrypt";
 
 const createHash = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
-const isValidPassword = (password, user) =>
-  bcrypt.compareSync(password, user.password);
+const isValidPassword = (password, user) => {
+  console.log("Esta es la userpass " + user.password);
+  return bcrypt.compareSync(password, user.password);
+};
 
-// comparesync compara los password, retorna true o false segun corresponda
-
+// compareSync compara los passwords, retorna true o false según corresponda
 export { createHash, isValidPassword };

@@ -1,33 +1,30 @@
-<link rel="stylesheet" href="/css/index.style.css" />
+<script defer src="/js/products.js"></script>
+<script defer type="module" src="/js/main.js"></script>
 
-<header class="header"></header>
-        <div></div>
-        <a href="/products" class="a_header__logo">
-            <img class="header__logo" src="img/logo.jpg" alt="Logotipo">
-        </a>
-        <div class="imgCarro" id="imgCarro" ><img src="img/shopbag.svg" class="pointer carrito" alt="carrito"></div>
-        <script>
-  document.querySelector("#imgCarro").addEventListener("click", () => {
-    alert("Paraa, el profe no nos explico eso todavia");
-  });
-</script>
-        
-    </header>
+<header class="header">
+  <a href="/products" class="a_header__logo">
+    <img class="header__logo" src="img/logo.jpg" alt="Logotipo" />
+  </a>
+  <div class="imgCarro" id="imgCarro" data-cart-id="{{cartID}}">
+    <img src="img/shopbag.svg" class="pointer carrito" alt="carrito" />
+  </div>
+
+</header>
+
 <nav class="navegacion">
-  <p>Bienvenido! {{user}}</p>
-<form action="/api/sessions/logout" method="post">
-  <button type="submit">Log Out</button>
-</form>
+  <p>Bienvenido! {{userName}}, {{email}}</p>
+  <form action="/api/sessions/logout" method="post">
+    <button type="submit">Log Out</button>
+  </form>
 
 </nav>
 
-<div class="mainContenedor">
-<br>
+<main class="mainContenedor">
+  <br />
   {{#if admin}}
     <a href="./realtimeproducts">realtimeproductos</a><br />
   {{/if}}
   <div class="contenedor">
-
 
     {{#each products}}
       <div class="producto">
@@ -42,41 +39,47 @@
           <p class="producto__precio-r"><b>{{this.price}}</b></p>
           <p class="producto__precio-r">stock: {{this.stock}}</p>
         </div>
+        <button
+          class="btn-addProductToCart button"
+          data-product-id="{{this._id}}"
+        >Agregar a carrito</button>
 
       </div>
     {{/each}}
   </div>
+  <div class="paginate">
 
-  {{#if hasPrevPage}}
-    <a href="/products?page={{prevPage}}">Anterior
-    </a>
-  {{/if}}
-  {{#if hasPrevPage}}
-    {{#if hasNextPage}}
-      <p>-</p>
+    {{#if hasPrevPage}}
+      <a href="/products?page={{prevPage}}">Anterior
+      </a>
     {{/if}}
-  {{/if}}
+    {{#if hasPrevPage}}
+      {{#if hasNextPage}}
+        <p>-</p>
+      {{/if}}
+    {{/if}}
 
-  {{#if hasNextPage}}
-    <a href="/products?page={{nextPage}}">Siguiente
-    </a>
-  {{/if}}
-  <p>Pagina {{currentPage}} de {{totalPages}}</p>
+    {{#if hasNextPage}}
+      <a href="/products?page={{nextPage}}">Siguiente
+      </a>
+    {{/if}}
+    <p>Pagina {{currentPage}} de {{totalPages}}</p>
+  </div>
+</main>
 
-</div>
-
-
-    <footer class="footer">
-        <div class="grid-footer">
-            <div class="iconos">
-                <a href="https://www.instagram.com/hali.accesorioss/"><i class="fa-brands fa-instagram icon"></a></i>
-                <a href="https://wa.me/+59895487760?text=Hola!%20Me%20interesa%20saber%20mas%20sobre%20sus%20productos."><i class="fa-brands fa-whatsapp icon"></a></i>
-            </div>
-            <div class="ubicaciones">
-                <p class="texto-ubicaciones">Montevideo - Punta del Este</p>
-                <p class="texto-ubicaciones">Hacemos envios</p>
-            </div>
-        </div>
-    </footer>
-
-    <script type="module" src="/js/main.js"></script>
+<footer class="footer">
+  <div class="grid-footer">
+    <div class="iconos">
+      <a href="https://www.instagram.com/hali.accesorioss/"><i
+          class="fa-brands fa-instagram icon"
+        ></i></a>
+      <a
+        href="https://wa.me/+59895487760?text=Hola!%20Me%20interesa%20saber%20mas%20sobre%20sus%20productos."
+      ><i class="fa-brands fa-whatsapp icon"></i></a>
+    </div>
+    <div class="ubicaciones">
+      <p class="texto-ubicaciones">Montevideo - Punta del Este</p>
+      <p class="texto-ubicaciones">Hacemos envios</p>
+    </div>
+  </div>
+</footer>
