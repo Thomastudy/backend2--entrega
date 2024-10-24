@@ -100,4 +100,3 @@ const addProduct = (productData) => {
 document.querySelector("#addProductBtn").addEventListener("click", () => {
   addProductWthBtn();
 });
-

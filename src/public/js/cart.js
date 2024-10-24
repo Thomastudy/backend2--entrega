@@ -1,10 +1,8 @@
 const btnVaciar = document.getElementById("btn-vaciar");
 const cartID = btnVaciar.getAttribute("data-cart-id");
 
-console.log(cartID);
-
 btnVaciar.addEventListener("click", async () => {
-  const response = fetch(`http://localhost:8080/api/carts/${cartID}`, {
+  const response = fetch(`http://localhost:8080/api/carts/empty/${cartID}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -27,7 +25,12 @@ btnComprar.addEventListener("click", async () => {
       "Content-Type": "application/json",
     },
   });
-
-  if (response.ok) {
-  }
+  //  .then(
+  //   fetch(`http://localhost:8080/api/carts/empty/${cartID}`, {
+  //     method: "DELETE",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  // );
 });

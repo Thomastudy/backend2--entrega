@@ -1,25 +1,30 @@
 import { Router } from "express";
 import cartController from "../controllers/cart.controller.js";
+import { authMiddleware } from "../middleware/auth.js";
 
 // declaramos router para facilitar su uso
 const router = Router();
 
 /*  GET/:cid
  */
-router.get("/:cid", cartController.getCartById);
+router.get("/:cid", authMiddleware, cartController.getCartById);
 
-router.post("/", cartController.createCart);
+router.post("/", authMiddleware, cartController.createCart);
 
 // post/:cid/products/:pid
-router.post("/:cid/product/:pid", cartController.addProductToCart);
+router.post(
+  "/:cid/product/:pid",
+  authMiddleware,
+  cartController.addProductToCart
+);
 
 /// ELIMINAR
-router.delete("/del/:cid", cartController.deleteCart);
+router.delete("/del/:cid", authMiddleware, cartController.deleteCart);
 
-router.delete("/:cid", cartController.emptyCart);
+router.delete("/empty/:cid", authMiddleware, cartController.emptyCart);
 
 /// COMPRA
-router.post("/:cid/purchase", cartController.purchase);
+router.post("/:cid/purchase", authMiddleware, cartController.purchase);
 
 /**
  * 

@@ -8,6 +8,7 @@ import cartController from "./cart.controller.js";
 const normalice = (word) => {
   const lower = word.trim().toLowerCase();
   const firsLetterUpper = lower[0].toUpperCase() + lower.slice(1);
+
   return firsLetterUpper;
 };
 
@@ -35,6 +36,7 @@ class UserController {
       // generar el nuevo token jwt
       const token = jwt.sign(
         {
+          userID: nuevoUsuario._id,
           userName: nuevoUsuario.userName,
           role: nuevoUsuario.role,
           cartID: nuevoUsuario.cartID,
@@ -51,7 +53,7 @@ class UserController {
         httpOnly: true,
       });
 
-      res.redirect("/api/sessions/home");
+      res.redirect("/api/sessions/current");
     } catch (error) {
       res.status(500).send("Error interno del servidor, " + error);
     }
@@ -70,6 +72,7 @@ class UserController {
 
       const token = jwt.sign(
         {
+          userID: user._id,
           userName: user.userName,
           email: user.email,
           role: user.role,
@@ -86,24 +89,12 @@ class UserController {
         maxAge: 3600000, //1h
         httpOnly: true,
       });
-      res.redirect("/api/sessions/home");
+      res.redirect("/api/sessions/current");
     } catch (error) {
       res.status(500).send("Error interno del servidorrrrrrrrrrr " + error);
     }
   }
-  async current(req, res) {
-    try {
-      if (req.user) {
-        const user = req.user;
-        const userDTO = new UserDTO(user);
-        res.render("mainpage", { user: userDTO });
-      } else {
-        res.status(403).send("Acceso denegado");
-      }
-    } catch (error) {
-      res.status(500).send(`Error interno en el servidor, ${error}`);
-    }
-  }
+
   async logOut(req, res) {
     res.clearCookie("userCookieToken");
     res.redirect("/login");

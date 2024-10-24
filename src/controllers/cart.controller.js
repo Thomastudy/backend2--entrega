@@ -1,5 +1,7 @@
 import cartService from "../services/cart.service.js";
 import productService from "../services/product.service.js";
+import { mailer } from "../utils/mailer.js";
+import ticketController from "./ticket.controller.js";
 
 class CartController {
   async createCart(req, res) {
@@ -64,7 +66,26 @@ class CartController {
     }
   }
 
-  async getProductsFromCart(req, res) {}
+  // async getProductsFromCart(cid) {
+  //   const cart = await cartService.getCartById(cid);
+  //   if (!cart) {
+  //     return "error al encontrar el carrito";
+  //   }
+  //   const productArray = await Promise.all(
+  //     cart.products.map(async (item) => {
+  //       const productDetail = await productService.getProductById(
+  //         item.product._id
+  //       );
+
+  //       return {
+  //         product: item.product._id,
+  //         productDetail,
+  //         quantity: item.quantity,
+  //       };
+  //     })
+  //   );
+  //   return productArray;
+  // }
 
   /**
    * empty Cart
@@ -105,6 +126,8 @@ class CartController {
 
   async purchase(req, res) {
     const { cid } = req.params;
+    let isStockOk = true;
+
     try {
       //getcart
       const cart = await cartService.getCartById(cid);
@@ -114,12 +137,15 @@ class CartController {
           .json({ message: "Error al encontrar el carrito" });
 
       //getproduct
-
       const productArray = await Promise.all(
         cart.products.map(async (item) => {
           const productDetail = await productService.getProductById(
             item.product._id
           );
+          if (productDetail.stock < item.quantity) {
+            // consulto stock
+            isStockOk = false;
+          }
           return {
             product: item.product._id,
             productDetail,
@@ -128,13 +154,58 @@ class CartController {
         })
       );
 
-      console.log(productArray);
-      // corroborar stock
+      if (!productArray || productArray.length === 0) {
+        return "carrito vacio o no encontrado";
+      }
       //no. rechazo compra
+      if (!isStockOk) {
+        console.log("error");
+        return res
+          .status(409)
+          .send(
+            "Las cantidades solicitadas de al menos uno de los productos exceden al stock del mismo"
+          );
+      }
+
       //si. continuo
+      const total = productArray.reduce((acc, item) => {
+        return acc + item.productDetail.price * item.quantity;
+      }, 0);
+
       // create ticket
-      // send mail
+      const { userID, email } = req.user;
+
+      const ticketData = {
+        products: productArray,
+        amount: total,
+        purchaser: userID,
+      };
+
+      const newTicket = await ticketController.createTicket(
+        { body: ticketData },
+        res
+      );
+
+      if (!newTicket) return res.status(404).send("error al crear el ticket");
+
       // emptyCart
+      cart.products = [];
+      cartService.updateCart(cid, cart);
+
+      // send mail
+
+      const mailCompra = `<h1>Gracias por su compra!!<h1/> <br/> <p>Confirmamos a traves de este medio la compra realizada de $${total}, numero de ticket ${newTicket._id}</p>`;
+
+      const mailVenta = `<h1>Te estan corrigiendo la entrega de bknd2!!<h1/> <br/> <p>El profe o tutor ${email}, numero de ticket ${newTicket._id}</p>`;
+
+      await mailer(email, "Confirmacion de compra", mailCompra);
+      await mailer(
+        "thomandoclases@gmail.com",
+        "Confirmacion de compra",
+        mailVenta
+      );
+
+      res.status(201).redirect("/products");
     } catch (error) {
       console.error("error al conectar con el servidor " + error);
       res.status(500).send(`Error en el server: ${error}`);

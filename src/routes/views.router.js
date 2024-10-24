@@ -3,6 +3,7 @@ import productModel from "../dao/models/product.model.js";
 import passport from "passport";
 import cartService from "../services/cart.service.js";
 import productService from "../services/product.service.js";
+import { authMiddleware, onlyAdmin, onlyUser } from "../middleware/auth.js";
 
 // instalacion router para las rutas
 const router = Router();
@@ -11,56 +12,64 @@ router.get("/", async (req, res) => {
   res.redirect("/login");
 });
 
+///////////////////////
+//      USER         //
+///////////////////////
+
 //Ruta principal donde se vera representado el front
-router.get(
-  "/products",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    let page = req.query.page || 1;
-    let limit = 3;
+router.get("/products", authMiddleware, onlyUser, async (req, res) => {
+  let page = req.query.page || 1;
+  let limit = 3;
 
-    try {
-      const isAdmin = req.user.role === "admin";
-      const listProducts = await productModel.paginate({}, { limit, page });
-      // const products = await manager.getProducts();
+  try {
+    const listProducts = await productModel.paginate({}, { limit, page });
+    // const products = await manager.getProducts();
 
-      // Puedo recuperar el doc y pasarlo a products
-      const listProductsFinal = listProducts.docs.map((products) => {
-        const showProducts = products.toObject();
-        return showProducts;
-      });
+    // Puedo recuperar el doc y pasarlo a products
+    const listProductsFinal = listProducts.docs.map((products) => {
+      const showProducts = products.toObject();
+      return showProducts;
+    });
 
-      res.render("index", {
-        userName: req.user.userName,
-        email: req.user.email,
-        admin: isAdmin,
-        cartID: req.user.cartID,
-        products: listProductsFinal,
-        hasPrevPage: listProducts.prevPage,
-        hasNextPage: listProducts.nextPage,
-        prevPage: listProducts.prevPage,
-        nextPage: listProducts.nextPage,
-        currentPage: listProducts.page,
-        totalPages: listProducts.totalPages,
-      });
-    } catch (error) {
-      res.status(500).send("error en el servidor");
-    }
+    res.render("index", {
+      userName: req.user.userName,
+      email: req.user.email,
+      cartID: req.user.cartID,
+      products: listProductsFinal,
+      hasPrevPage: listProducts.prevPage,
+      hasNextPage: listProducts.nextPage,
+      prevPage: listProducts.prevPage,
+      nextPage: listProducts.nextPage,
+      currentPage: listProducts.page,
+      totalPages: listProducts.totalPages,
+    });
+  } catch (error) {
+    res.status(500).send("error en el servidor");
   }
-);
+});
+
+///////////////////////
+//      ADMIN        //
+///////////////////////
+
+router.get("/adminpage", authMiddleware, onlyAdmin, async (req, res) => {
+  res.render("mainpage", {
+    userName: req.user.userName,
+  });
+});
 
 // mostrar los productos en timepo rea
 // con boton de agregar y eliminar
 
-router.get("/realtimeproducts", async (req, res) => {
+router.get("/realtimeproducts", authMiddleware, onlyAdmin, async (req, res) => {
   res.render("realtimeproducts");
 });
 
 ///////////////////////
-// inicio de usuario //
+//   CART- COMPRA    //
 ///////////////////////
 
-router.get("/cart/:cid", async (req, res) => {
+router.get("/cart/:cid", authMiddleware, async (req, res) => {
   const cartID = req.params.cid;
 
   try {
@@ -82,13 +91,19 @@ router.get("/cart/:cid", async (req, res) => {
         return {
           product: productDetails.toObject(),
           quantity: item.quantity,
+          price: productDetails.price,
         };
       })
     );
 
+    const total = productsInCart.reduce((acc, item) => {
+      return acc + item.price * item.quantity;
+    }, 0);
+
     res.render("cart", {
       cartID: cartID,
       products: productsInCart,
+      total: total,
     });
   } catch (error) {
     res.status(500).send("Error en el servidor: " + error);

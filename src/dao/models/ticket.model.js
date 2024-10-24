@@ -10,6 +10,19 @@ const ticketSchema = new mongoose.Schema({
     default: Date.now(),
     required: true,
   },
+  products: [
+    {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "products",
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        required: true,
+      },
+    },
+  ],
   amount: {
     type: Number,
     required: true,

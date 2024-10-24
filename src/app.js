@@ -12,8 +12,8 @@ import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
 import usersRouter from "./routes/users.router.js";
+import ticketsRouter from "./routes/tickets.router.js";
 
-// Importacion de Manager
 // Passport config
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
@@ -24,7 +24,7 @@ import productController from "./controllers/product.controller.js";
 const app = express();
 
 // declaro en que puerto se va a correr, facilitando y optimizando
-const PUERTO = 8080;
+const PORT = process.env.PORT || 8080;
 
 /*////////////////////
 
@@ -32,6 +32,8 @@ MIDDLEWARE
 
 //////////////////////
 */
+
+
 
 //Middleware: aca le digo al servidor que voy a usar formato json
 app.use(express.json());
@@ -96,11 +98,19 @@ app.use("/api/carts", cartsRouter);
 // llama a la api sessions para usar sus funcionalidades
 app.use("/api/sessions", usersRouter);
 
+/*///////////////////////////////
+          TICKETS
+///////////////////////////////*/
+// llama a la api tickets para usar sus funcionalidades
+app.use("/api/tickets", ticketsRouter);
+
 // VINCULA EL SERVIDOR
-const httpServer = app.listen(PUERTO, () => {
+const httpServer = app.listen(PORT, () => {
   // cuando el puerto esta escuchando lo comunica a traves de la consola
-  console.log(`Escuchando en el puerto: http://localhost:${PUERTO}`);
+  console.log(`Escuchando en el puerto: http://localhost:${PORT}`);
 });
+
+
 
 /*/////////////////////////
 
@@ -139,7 +149,7 @@ io.on("connection", async (socket) => {
   // //Recibimos el evento "addProduct" desde el cliente y agregamos con el metodo addproduct:
   socket.on("addProduct", async (formValues) => {
     try {
-      const result = await manager.addProduct(formValues);
+      const result = await productController.addProduct(formValues);
 
       if (result) {
         console.log("Nuevo producto agregado correctamente");
@@ -150,5 +160,5 @@ io.on("connection", async (socket) => {
   });
 
   // //Despues de borrar le envio los productos actualizados al cliente:
-  io.sockets.emit("products", await manager.getProducts());
+  io.sockets.emit("products", await productController.getProducts());
 });

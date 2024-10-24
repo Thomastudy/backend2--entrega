@@ -26,7 +26,7 @@
       <div class="checkout--info-btn">
         <div class="checkout--listado--info">
           <h3>{{this.product.title}}</h3>
-          <h3>{{this.product.price}}</h3>
+          <h3>${{this.price}}</h3>
           <p>Cantidad: {{this.quantity}}</p>
         </div>
         <a class="boton-eliminar">
@@ -38,53 +38,11 @@
 
 </div>
 <div class="total--compra">
-  <p>Total: {{total}}</p>
+  <p>Total: ${{total}}</p>
 </div>
-<form action="" class="form--compra">
-  <button type="button" class="button">
-    Comprar
-  </button>
 
-  <div class="form--div">
-    <h2>Finalizar compra</h2>
-    <div>
-      <input
-        placeholder=""
-        class="form--input"
-        required
-        value=""
-        name="name"
-        type="text"
-        onChange="{handleChange}"
-      />
-      <label class="form--label">Nombre:</label>
-    </div>
-    <div>
-      <input
-        placeholder=""
-        class="form--input"
-        required
-        value=""
-        name="email"
-        type="email"
-        onChange="{handleChange}"
-      />
-      <label class="form--label">Email:</label>
-    </div>
-    <div>
-      <input
-        placeholder=""
-        class="form--input"
-        required
-        value=""
-        name="phone"
-        type="tel"
-        onChange="{handleChange}"
-      />
-      <label class="form--label">Telefono:</label>
-    </div>
-    <button type="button" id="btn-purchase" class="btnComprar button">
-      Finalizar compra
-    </button>
-  </div>
+<form class="form--compra">
+  <button type="submit" id="btn-purchase" class="button">
+    Finalizar compra
+  </button>
 </form>
