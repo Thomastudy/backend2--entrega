@@ -9,13 +9,23 @@ class ProductDao {
   }
   async save(productData) {
     const producto = new ProductModel(productData);
-    return await producto.save;
+    const newProduct = producto.save();
+
+    return await newProduct;
   }
   async update(id, productData) {
-    return await ProductModel.findByIdAndUpdate(id, productData);
+    const updatedProduct = await ProductModel.findByIdAndUpdate(
+      id,
+      productData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    return updatedProduct;
   }
   async delete(id) {
-    return await ProductModel.findByIdAndDelete(id)
+    return await ProductModel.findByIdAndDelete(id);
   }
 }
 

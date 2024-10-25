@@ -53,7 +53,11 @@ class CartController {
         (item) => item.product._id.toString() === pid
       );
       if (productInCart) {
-        productInCart.quantity += quantity;
+        if (quantity === product.stock) {
+          return res.status(401).send("No hay mas stock");
+        } else {
+          productInCart.quantity += quantity;
+        }
       } else {
         cart.products.push({ product: pid, quantity });
       }

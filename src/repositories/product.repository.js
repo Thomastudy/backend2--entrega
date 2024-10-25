@@ -11,7 +11,8 @@ class ProductRepository {
     return await productDao.find(query);
   }
   async updateProduct(id, productData) {
-    return await productDao.update(id, productData);
+    const updatedProduct = await productDao.update(id, productData);
+    return await productDao.save(updatedProduct);
   }
   async deleteById(id) {
     return await productDao.delete(id);

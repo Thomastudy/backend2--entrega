@@ -17,6 +17,7 @@ import ticketsRouter from "./routes/tickets.router.js";
 // Passport config
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
+import productService from "./services/product.service.js";
 import productController from "./controllers/product.controller.js";
 
 /* Configuracion de puerto */
@@ -32,8 +33,6 @@ MIDDLEWARE
 
 //////////////////////
 */
-
-
 
 //Middleware: aca le digo al servidor que voy a usar formato json
 app.use(express.json());
@@ -110,8 +109,6 @@ const httpServer = app.listen(PORT, () => {
   console.log(`Escuchando en el puerto: http://localhost:${PORT}`);
 });
 
-
-
 /*/////////////////////////
 
 SERVER
@@ -126,22 +123,21 @@ io.on("connection", async (socket) => {
   console.log("Un cliente se conecto");
 
   //Le envian el array de productos a la vista realTimeProducts:
-  socket.emit("products", await productController.getProducts());
+  socket.emit("products", await productService.getProducts());
   //Con un evento y el metodo "on" lo escuchas desde el  main.js y lo mostras por pantalla.
 
   // //Recibimos el evento "deleteProduct" desde el cliente y borramos con el metodo borrar:
   socket.on("deleteProduct", async (id) => {
-    await productController.deleteProductById(id);
+    await productService.deleteById(id);
+    io.emit("products", await productService.getProducts());
   });
 
   // //Recibimos el evento "updateProduct" desde el cliente y actualizamos con el metodo update:
   socket.on("updateProduct", async ({ id, stock }) => {
     try {
-      console.log({ id, stock });
+      await productService.updateProduct(id, { stock: stock });
 
-      await productController.updateProduct({ idProducto: id, stock });
-      const products = await products.find(); // Obtén la lista actualizada de productos
-      io.emit("products", products);
+      io.emit("products", await productService.getProducts());
     } catch (error) {
       console.error("Error updating product:", error);
     }
@@ -149,16 +145,26 @@ io.on("connection", async (socket) => {
   // //Recibimos el evento "addProduct" desde el cliente y agregamos con el metodo addproduct:
   socket.on("addProduct", async (formValues) => {
     try {
-      const result = await productController.addProduct(formValues);
+      const result = await fetch(`http://localhost:8080/api/products/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formValues),
+      });
 
-      if (result) {
-        console.log("Nuevo producto agregado correctamente");
+      // console.log(result);
+      const data = await result.json();
+      if (result.ok) {
+        console.log("Nuevo producto agregado correctamente " + data);
       }
+
+      io.emit("products", await productService.getProducts());
     } catch (error) {
       console.error("Error adding product:", error);
     }
   });
 
   // //Despues de borrar le envio los productos actualizados al cliente:
-  io.sockets.emit("products", await productController.getProducts());
+  // io.sockets.emit("products", await productService.getProducts());
 });

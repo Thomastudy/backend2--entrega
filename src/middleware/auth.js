@@ -5,7 +5,7 @@ function verifyToken(req, res, next) {
   const token = req.cookies.userCookieToken;
 
   if (!token) {
-    return res.status(403).send("Acceso denegado. Sesion no encontrada");
+    return res.status(403).redirect("/");
   }
   try {
     // verificar y decodificar el token
