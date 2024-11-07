@@ -2,15 +2,9 @@ import productService from "../services/product.service.js";
 
 class ProductController {
   async getProducts(req, res) {
-    const { limit = 10, page = 1, sort, query } = req.body;
     try {
-      const products = await productService.getProducts({
-        limit,
-        page,
-        sort,
-        query,
-      });
-      res.json(products);
+      const products = await productService.getProducts();
+      res.json({ products });
     } catch (error) {
       res.status(500).send(`Error en el server: ${error}`);
     }
@@ -21,7 +15,8 @@ class ProductController {
       const product = await productService.getProductById(id);
       if (!product)
         return res.status(404).josn({ message: "Producto no encontrado" });
-      res.json(product);
+
+      res.json({ product });
     } catch (error) {
       res.status(500).json({ message: `Error en el server: ${error}` });
     }

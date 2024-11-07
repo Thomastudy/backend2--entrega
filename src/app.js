@@ -4,6 +4,7 @@ import express from "express";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 // Database
 import "./database.js";
@@ -19,6 +20,7 @@ import passport from "passport";
 import initializePassport from "./config/passport.config.js";
 import productService from "./services/product.service.js";
 import productController from "./controllers/product.controller.js";
+import compression from "express-compression";
 
 /* Configuracion de puerto */
 // declaro app como express para que sea mas facil y mas visual
@@ -45,6 +47,17 @@ app.use(cookieParser());
 // passport config middleware
 initializePassport();
 app.use(passport.initialize());
+// cors para conexion con front
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// Middleware para mejorar rendimiento
+app.use(
+  compression({
+    brotli: {
+      enabled: true,
+      zlib: {},
+    },
+  })
+);
 
 /*////////////////////
 

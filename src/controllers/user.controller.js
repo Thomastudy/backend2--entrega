@@ -53,7 +53,7 @@ class UserController {
         httpOnly: true,
       });
 
-      res.redirect("/api/sessions/current");
+      res.status(201).json("Success");
     } catch (error) {
       res.status(500).send("Error interno del servidor, " + error);
     }
@@ -67,7 +67,9 @@ class UserController {
       const user = await userService.loginUser(userNameFixed, password);
 
       if (!user) {
-        return res.status(401).send("Usuario o contraseña incorrectos");
+        return res
+          .status(401)
+          .json({ message: "Usuario o contraseña incorrectos" });
       }
 
       const token = jwt.sign(
@@ -89,7 +91,13 @@ class UserController {
         maxAge: 3600000, //1h
         httpOnly: true,
       });
-      res.redirect("/api/sessions/current");
+      res.json({
+        userID: user._id,
+        userName: user.userName,
+        email: user.email,
+        role: user.role,
+        cartID: user.cartID,
+      });
     } catch (error) {
       res.status(500).send("Error interno del servidorrrrrrrrrrr " + error);
     }
@@ -97,7 +105,7 @@ class UserController {
 
   async logOut(req, res) {
     res.clearCookie("userCookieToken");
-    res.redirect("/login");
+    res.status(200).json({ message: "Success" });
   }
 }
 

@@ -13,7 +13,7 @@ class CartController {
           .status(400)
           .json({ message: "Error en la creacion del nuevo carrito" });
 
-      // res.status(201).json({ message: "Success" });
+      // res.status(200).json({ message: "Success" });
       return newCart;
     } catch (error) {
       res.status(500).send(`Error en el server: ${error}`);
@@ -22,12 +22,13 @@ class CartController {
   async getCartById(req, res) {
     const { cid } = req.params;
     try {
-      const cart = cartService.getCartById(cid);
+      const cart = await cartService.getCartById(cid);
       if (!cart)
         return res
           .status(404)
           .json({ message: "Error al encontrar el carrito" });
-      return res.send(cart);
+
+      return res.status(200).json({ cart });
     } catch (error) {
       res.status(500).send(`Error en el server: ${error}`);
     }
@@ -49,7 +50,7 @@ class CartController {
           .status(404)
           .json({ message: "Error al encontrar el producto" });
 
-      const productInCart = await cart.products.find(
+      const productInCart = cart.products.find(
         (item) => item.product._id.toString() === pid
       );
       if (productInCart) {
@@ -106,9 +107,9 @@ class CartController {
           .json({ message: "Error al encontrar el carrito" });
 
       cart.products = [];
-      cartService.updateCart(cid, cart);
+      await cartService.updateCart(cid, cart);
       console.log(cart);
-      res.status(201).json({ message: "Success" });
+      res.status(200).json({ message: "Success" });
     } catch (error) {
       res.status(500).send(`Error en el server: ${error}`);
     }
@@ -125,6 +126,37 @@ class CartController {
       res.json({ message: "Success" });
     } catch (error) {
       res.status(500).send(`Error en el server: ${error}`);
+    }
+  }
+
+  async delProductFromCart(req, res) {
+    const { cid, pid } = req.params;
+    try {
+      const cart = await cartService.getCartById(cid);
+
+      if (!cart || !cart.products || !Array.isArray(cart.products)) {
+        return res.status(400).json({ error: "Problemas con el carrito" });
+      }
+      const productIndex = cart.products.findIndex(
+        (i) => i.product._id.toString() === pid.toString()
+      );
+      const product = cart.products[productIndex];
+
+      if (!product || !product.quantity) {
+        return res.status(400).json({ error: "Problemas con el carrito" });
+      }
+
+      if (product.quantity <= 1) {
+        cart.products.splice(productIndex, 1);
+      } else {
+        product.quantity--;
+      }
+
+      await cartService.updateCart(cid, cart);
+
+      return res.status(200).json(product);
+    } catch (error) {
+      console.log("error, " + error);
     }
   }
 
@@ -209,7 +241,7 @@ class CartController {
         mailVenta
       );
 
-      res.status(201).redirect("/products");
+      res.status(200).json({ message: "Success" });
     } catch (error) {
       console.error("error al conectar con el servidor " + error);
       res.status(500).send(`Error en el server: ${error}`);

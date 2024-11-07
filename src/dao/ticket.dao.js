@@ -4,7 +4,10 @@ class TicketDao {
   async save(ticketData) {
     const ticket = new TicketModel(ticketData);
     ticket.save();
-    return await ticket;
+    return ticket;
+  }
+  async find(query) {
+    return await TicketModel.find(query);
   }
 }
 

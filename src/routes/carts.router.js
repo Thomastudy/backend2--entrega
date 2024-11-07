@@ -27,8 +27,14 @@ router.delete("/empty/:cid", authMiddleware, cartController.emptyCart);
 router.post("/:cid/purchase", authMiddleware, cartController.purchase);
 
 /**
- * 
-// router.delete("/:cid/products/:pid", cartController.delProductFroomCart);
+ */
+router.delete(
+  "/:cid/del/:pid",
+  authMiddleware,
+  cartController.delProductFromCart
+);
+
+/* 
 // actualizar carrito
 // router.put("/:cid", cartController.);
 

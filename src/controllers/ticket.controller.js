@@ -36,6 +36,30 @@ class TicketController {
       res.send(`Error en la creacion del ticket, ${error}`);
     }
   }
+
+  async getTicketsByUser(req, res) {
+    const { userID } = req.params;
+    try {
+      console.log("userid " + userID);
+
+      if (!userID)
+        return res.status(400).json({ error: "error al encontrar el usuario" });
+      const tickets = await ticketService.getTickets();
+      if (!tickets)
+        return res.status(400).json({ error: "error al encontrar tickets" });
+
+      const purchases = tickets.filter(
+        (i) => i.purchaser.toString() === userID.toString()
+      );
+      if (!purchases)
+        return res.status(400).json({ error: "error al encontrar purchases" });
+      console.log(purchases);
+
+      res.status(200).json(purchases);
+    } catch (error) {
+      res.send(`Error en la busqueda de tickets, ${error}`);
+    }
+  }
 }
 
 export default new TicketController();

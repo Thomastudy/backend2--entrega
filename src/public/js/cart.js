@@ -25,12 +25,4 @@ btnComprar.addEventListener("click", async () => {
       "Content-Type": "application/json",
     },
   });
-  //  .then(
-  //   fetch(`http://localhost:8080/api/carts/empty/${cartID}`, {
-  //     method: "DELETE",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   })
-  // );
 });
